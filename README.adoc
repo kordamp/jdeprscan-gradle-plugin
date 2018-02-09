@@ -1,6 +1,6 @@
 = jdeprscan-gradle-plugin
 :linkattrs:
-:project-name: jdeprescan-gradle-plugin
+:project-name: jdeprscan-gradle-plugin
 :plugin-version: 0.1.0
 
 image:http://img.shields.io/travis/aalmiray/{project-name}/master.svg["Build Status", link="https://travis-ci.org/aalmiray/{project-name}"]
