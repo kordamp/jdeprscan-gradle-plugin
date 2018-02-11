@@ -42,14 +42,14 @@ as classpath.
 == Configuration
 === Plugin configuration
 
-The following properties can be specified in the `jdeps` task configuration
+The following properties can be specified in the `jdeprscan` task configuration
 
 |===
 | Name           | Type    | Default Value
 | forRemoval     | boolean | false
 | release        | int     | 9
 | verbose        | boolean | false
-| javahome       | String  |
+| javaHome       | String  |
 | consoleOutput  | boolean | true
 | reportsDir     | File    | "${buildDir}/reports/jdeprscan"
 |===
