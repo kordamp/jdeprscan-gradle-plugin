@@ -54,8 +54,8 @@ The following properties can be specified in the `jdeps` task configuration
 | reportsDir     | File    | "${buildDir}/reports/jdeprscan"
 |===
 
-You may run this plugin int a build that relies Java 8 as lojg as you configure a valid path to a JDK9+ installation
-directory using the `javaHome` property, fo example
+You may run this plugin in a build that relies Java 8 as long as you configure a valid path to a JDK9+ installation
+directory using the `javaHome` property, for example
 
 [source]
 ----
