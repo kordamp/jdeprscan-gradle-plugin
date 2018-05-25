@@ -14,6 +14,7 @@ Runs the `jdeprscan` command on the project's output.
 
 == Usage
 
+Option #1
 [source,groovy]
 [subs="attributes"]
 ----
@@ -28,6 +29,7 @@ buildscript {
 apply plugin: 'org.kordamp.jdeprscan'
 ----
 
+Option #2
 [source,groovy]
 [subs="attributes"]
 ----
@@ -45,13 +47,15 @@ as classpath.
 The following properties can be specified in the `jdeprscan` task configuration
 
 |===
-| Name           | Type    | Default Value
-| forRemoval     | boolean | false
-| release        | int     | 9
-| verbose        | boolean | false
-| javaHome       | String  |
-| consoleOutput  | boolean | true
-| reportsDir     | File    | "${buildDir}/reports/jdeprscan"
+| Name           | Type         | Default Value
+| forRemoval     | boolean      | false
+| release        | int          | 9
+| verbose        | boolean      | false
+| javaHome       | String       |
+| consoleOutput  | boolean      | true
+| reportsDir     | File         | "${buildDir}/reports/jdeprscan"
+| configurations | List<String> | ['runtime']
+| sourceSets     | List<String> | ['main']
 |===
 
 You may run this plugin in a build that relies Java 8 as long as you configure a valid path to a JDK9+ installation
@@ -63,3 +67,15 @@ jdeprscan {
     javaHome = '/Library/Java/JavaVirtualMachines/jdk-9.jdk/Contents/Home'
 }
 ----
+
+You may configure multiple sourceSets and configurations, which will be evaluated in a single report. The following snippet
+shows how this plugin can be configured to run `jdeprscan` on production and test sources
+
+[source]
+----
+jdeprscan {
+    sourceSets = ['main', 'test']
+    configurations = ['testRuntime']
+}
+----
+

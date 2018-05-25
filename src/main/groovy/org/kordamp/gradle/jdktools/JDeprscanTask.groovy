@@ -32,26 +32,38 @@ class JDeprscanTask extends DefaultTask {
     @Input boolean consoleOutput = true
     @Input @Optional String javaHome
     @InputDirectory @Optional File reportsDir
+    @Input @Optional List<String> configurations = ['runtime']
+    @Input @Optional List<String> sourceSets = ['main']
 
     @TaskAction
     void evaluate() {
         File javaHomeDir = new File(javaHome ?: System.getProperty('java.home'))
         File javaBindDir = new File(javaHomeDir, 'bin')
+
+        if (!configurations) configurations = ['runtime']
+        if (!sourceSets) sourceSets = ['main']
+
+
         final List<String> baseCmd = [new File(javaBindDir, 'jdeprscan').absolutePath]
         baseCmd << '--class-path'
-        baseCmd << project.configurations.runtime.files.join(File.pathSeparator) + File.pathSeparator + project.sourceSets.main.output.asPath
+        baseCmd << configurations.collect { c -> project.configurations[c].files }.flatten().unique().join(File.pathSeparator) +
+            File.pathSeparator +
+            sourceSets.collect { s -> project.sourceSets[s].output.asPath }.flatten().unique().join(File.pathSeparator)
+
         if (forRemoval && release > 8) baseCmd << '--for-removal'
         baseCmd << '--release'
         baseCmd << release.toString()
         if (verbose) baseCmd << '-v'
 
         List<String> outputs = []
-        project.sourceSets.main.output.files.each { File file ->
-            if (!file.exists()) {
-                return // skip
-            }
+        sourceSets.each { sourceSetName ->
+            project.sourceSets[sourceSetName].output.files.each { File file ->
+                if (!file.exists()) {
+                    return // skip
+                }
 
-            outputs << JDeprscanTask.runOn(baseCmd, file.absolutePath)
+                outputs << JDeprscanTask.runOn(baseCmd, file.absolutePath)
+            }
         }
 
         if (consoleOutput) println outputs.join('\n')
