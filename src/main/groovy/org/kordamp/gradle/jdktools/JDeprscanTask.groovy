@@ -43,7 +43,6 @@ class JDeprscanTask extends DefaultTask {
         if (!configurations) configurations = ['runtime']
         if (!sourceSets) sourceSets = ['main']
 
-
         final List<String> baseCmd = [new File(javaBindDir, 'jdeprscan').absolutePath]
         baseCmd << '--class-path'
         baseCmd << configurations.collect { c -> project.configurations[c].files }.flatten().unique().join(File.pathSeparator) +
