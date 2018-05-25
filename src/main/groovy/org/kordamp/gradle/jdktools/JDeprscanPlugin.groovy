@@ -28,7 +28,7 @@ class JDeprscanPlugin implements Plugin<Project> {
         this.project = project
         project.apply(plugin: 'java')
 
-        project.task('jdeprscan',
+        project.tasks.findByName('check').dependsOn << project.task('jdeprscan',
             type: JDeprscanTask,
             group: 'Build',
             dependsOn: 'classes',
