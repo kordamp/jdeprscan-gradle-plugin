@@ -17,8 +17,8 @@ package org.kordamp.gradle.jdktools
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.zeroturnaround.exec.ProcessExecutor
 
@@ -31,9 +31,10 @@ class JDeprscanTask extends DefaultTask {
     @Input boolean verbose = false
     @Input boolean consoleOutput = true
     @Input @Optional String javaHome
-    @InputDirectory @Optional File reportsDir
     @Input @Optional List<String> configurations = ['runtime']
     @Input @Optional List<String> sourceSets = ['main']
+
+    private Object reportDir
 
     @TaskAction
     void evaluate() {
@@ -67,11 +68,24 @@ class JDeprscanTask extends DefaultTask {
 
         if (consoleOutput) println outputs.join('\n')
 
-        File parentFile = reportsDir ?: project.file("${project.buildDir}/reports/jdeprscan")
+        File parentFile = getReportsDir()
         if (!parentFile.exists()) parentFile.mkdirs()
         File logFile = new File(parentFile, 'jdeprscan-report.txt')
 
         logFile.withPrintWriter { w -> outputs.each { f -> w.println(f) } }
+    }
+
+    @OutputDirectory
+    File getReportsDir() {
+        if( this.reportDir == null) {
+            File reportsDir = new File(project.buildDir, 'reports')
+            this.reportDir = new File(reportsDir, 'jdeprscan')
+        }
+        project.file(this.reportDir)
+    }
+
+    void setReportsDir(File f) {
+        this.reportDir = f
     }
 
     private static String runOn(List<String> baseCmd, String path) {
