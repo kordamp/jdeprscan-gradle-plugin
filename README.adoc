@@ -1,7 +1,7 @@
 = jdeprscan-gradle-plugin
 :linkattrs:
 :project-name: jdeprscan-gradle-plugin
-:plugin-version: 0.3.0
+:plugin-version: 0.4.0
 
 image:http://img.shields.io/travis/aalmiray/{project-name}/master.svg["Build Status", link="https://travis-ci.org/aalmiray/{project-name}"]
 image:http://img.shields.io/badge/license-ASF2-blue.svg["Apache License 2", link="http://www.apache.org/licenses/LICENSE-2.0.txt"]
@@ -26,7 +26,7 @@ buildscript {
         classpath 'org.kordamp.gradle:{project-name}:{plugin-version}'
     }
 }
-apply plugin: 'org.kordamp.jdeprscan'
+apply plugin: 'org.kordamp.gradle.jdeprscan'
 ----
 
 Option #2
@@ -34,17 +34,17 @@ Option #2
 [subs="attributes"]
 ----
 plugins {
-    id 'org.kordamp.jdeprscan' version '{plugin-version}'
+    id 'org.kordamp.gradle.jdeprscan' version '{plugin-version}'
 }
 ----
 
-This will add a `jdeprscan` task to your build, which will analyze the `main` sourceSets using the `runtime` configuration
+This will add a `jdeprScanReport` task to your build, which will analyze the `main` sourceSets using the `runtime` configuration
 as classpath.
 
 == Configuration
 === Plugin configuration
 
-The following properties can be specified in the `jdeprscan` task configuration
+The following properties can be specified in the `jdeprScanReport` task configuration
 
 |===
 | Name           | Type         | Default Value
@@ -63,17 +63,17 @@ directory using the `javaHome` property, for example
 
 [source]
 ----
-jdeprscan {
+jdeprScanReport {
     javaHome = '/Library/Java/JavaVirtualMachines/jdk-9.jdk/Contents/Home'
 }
 ----
 
 You may configure multiple sourceSets and configurations, which will be evaluated in a single report. The following snippet
-shows how this plugin can be configured to run `jdeprscan` on production and test sources
+shows how this plugin can be configured to run `jdeprScanReport` on production and test sources
 
 [source]
 ----
-jdeprscan {
+jdeprScanReport {
     sourceSets = ['main', 'test']
     configurations = ['testRuntime']
 }

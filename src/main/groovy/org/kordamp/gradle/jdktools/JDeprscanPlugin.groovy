@@ -1,5 +1,7 @@
 /*
- * Copyright 2018 the original author or authors.
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Copyright 2018 Andres Almiray.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,22 +20,25 @@ package org.kordamp.gradle.jdktools
 import groovy.transform.CompileStatic
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.BasePlugin
+import org.gradle.api.plugins.JavaBasePlugin
 
 /**
  * @author Andres Almiray
  */
 @CompileStatic
-class JDeprscanPlugin implements Plugin<Project> {
+class JDeprScanPlugin implements Plugin<Project> {
     Project project
 
     void apply(Project project) {
         this.project = project
-        project.apply(plugin: 'java')
 
-        project.tasks.findByName('check').dependsOn << project.task('jdeprscan',
-            type: JDeprscanTask,
-            group: 'Build',
+        project.plugins.apply(JavaBasePlugin)
+
+        project.tasks.findByName('check').dependsOn << project.task('jdeprScanReport',
+            type: JDeprScanReportTask,
+            group: BasePlugin.BUILD_GROUP,
             dependsOn: 'classes',
-            description: 'Evaluate project dependencies with jdeprscan')
+            description: 'Generate a jdeprscan report on project classes and dependencies')
     }
 }

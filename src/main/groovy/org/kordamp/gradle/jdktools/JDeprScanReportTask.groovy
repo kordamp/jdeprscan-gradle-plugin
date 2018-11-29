@@ -1,5 +1,7 @@
 /*
- * Copyright 2018 the original author or authors.
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Copyright 2018 Andres Almiray.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +27,7 @@ import org.zeroturnaround.exec.ProcessExecutor
 /**
  * @author Andres Almiray
  */
-class JDeprscanTask extends DefaultTask {
+class JDeprScanReportTask extends DefaultTask {
     @Input boolean forRemoval = false
     @Input int release = 9
     @Input boolean verbose = false
@@ -62,7 +64,7 @@ class JDeprscanTask extends DefaultTask {
                     return // skip
                 }
 
-                outputs << JDeprscanTask.runOn(baseCmd, file.absolutePath)
+                outputs << JDeprScanReportTask.runOn(baseCmd, file.absolutePath)
             }
         }
 
