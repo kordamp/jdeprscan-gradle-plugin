@@ -17,17 +17,11 @@
  */
 
 plugins {
-    id 'com.gradle.build-scan'                version '1.16'
     id 'groovy'
     id 'idea'
-    id 'java-gradle-plugin'
-    id 'org.kordamp.gradle.kordamp-parentpom' version '1.1.2'
-    id 'com.gradle.plugin-publish'            version '0.10.0'
-}
-
-buildScan {
-    termsOfServiceUrl   = 'https://gradle.com/terms-of-service'
-    termsOfServiceAgree = 'yes'
+    id 'org.kordamp.gradle.kordamp-parentpom' version '1.8.0'
+    id 'org.kordamp.gradle.bintray'           version '0.29.0'
+    id 'org.kordamp.gradle.plugin'            version '0.29.0'
 }
 
 config {
@@ -39,9 +33,18 @@ config {
 
         specification { enabled = false }
     }
-
     groovydoc {
         replaceJavadoc = true
+    }
+
+    plugin {
+        enabled             = true
+        id                  = project.pluginId
+        implementationClass = project.pluginImplementationClass
+    }
+
+    bintray {
+        skipMavenSync = true
     }
 }
 
@@ -59,8 +62,8 @@ dependencyUpdates.resolutionStrategy = {
 }
 
 dependencies {
-    compile gradleApi()
-    compile "org.zeroturnaround:zt-exec:$ztexecVersion"
+    implementation gradleApi()
+    implementation "org.zeroturnaround:zt-exec:$ztexecVersion"
 }
 
 compileGroovy {
@@ -69,42 +72,3 @@ compileGroovy {
 }
 
 task publishRelease(dependsOn: [bintrayUpload, publishPlugins]) {}
-
-afterEvaluate {
-    gradlePlugin {
-        plugins {
-            jdeprscanPlugin {
-                id                  = pluginId
-                implementationClass = pluginImplementationClass
-            }
-        }
-    }
-    
-    bintray {
-        pkg {
-            version {
-                attributes = ['gradle-plugin': "${project.pluginId}:${project.group}:${project.name}"]
-            }
-        }
-    }
-
-    pluginBundle {
-        website     = project.mergedConfiguration.info.links.website
-        vcsUrl      = project.mergedConfiguration.info.links.scm
-        description = project.mergedConfiguration.info.description
-        tags        = project.mergedConfiguration.info.tags
-
-        plugins {
-            jdeprscanPlugin {
-                id          = project.pluginId
-                displayName = project.mergedConfiguration.info.description
-            }
-        }
-
-        mavenCoordinates {
-            groupId    = project.group
-            artifactId = project.name
-            version    = project.version
-        }
-    }
-}

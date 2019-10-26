@@ -38,13 +38,13 @@ plugins {
 }
 ----
 
-This will add a `jdeprScanReport` task to your build, which will analyze the `main` sourceSets using the `runtime` configuration
+This will add a `jdeprscanReport` task to your build, which will analyze the `main` sourceSets using the `runtime` configuration
 as classpath.
 
 == Configuration
 === Plugin configuration
 
-The following properties can be specified in the `jdeprScanReport` task configuration
+The following properties can be specified in the `jdeprscanReport` task configuration
 
 |===
 | Name           | Type         | Default Value
@@ -63,17 +63,17 @@ directory using the `javaHome` property, for example
 
 [source]
 ----
-jdeprScanReport {
+jdeprscanReport {
     javaHome = '/Library/Java/JavaVirtualMachines/jdk-9.jdk/Contents/Home'
 }
 ----
 
 You may configure multiple sourceSets and configurations, which will be evaluated in a single report. The following snippet
-shows how this plugin can be configured to run `jdeprScanReport` on production and test sources
+shows how this plugin can be configured to run `jdeprscanReport` on production and test sources
 
 [source]
 ----
-jdeprScanReport {
+jdeprscanReport {
     sourceSets = ['main', 'test']
     configurations = ['testRuntime']
 }

@@ -33,7 +33,7 @@ class JDeprScanReportTask extends DefaultTask {
     @Input boolean verbose = false
     @Input boolean consoleOutput = true
     @Input @Optional String javaHome
-    @Input @Optional List<String> configurations = ['runtime']
+    @Input @Optional List<String> configurations = ['runtimeClasspath']
     @Input @Optional List<String> sourceSets = ['main']
 
     private Object reportDir
@@ -43,7 +43,7 @@ class JDeprScanReportTask extends DefaultTask {
         File javaHomeDir = new File(javaHome ?: System.getProperty('java.home'))
         File javaBindDir = new File(javaHomeDir, 'bin')
 
-        if (!configurations) configurations = ['runtime']
+        if (!configurations) configurations = ['runtimeClasspath']
         if (!sourceSets) sourceSets = ['main']
 
         final List<String> baseCmd = [new File(javaBindDir, 'jdeprscan').absolutePath]
