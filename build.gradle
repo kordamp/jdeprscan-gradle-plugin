@@ -41,7 +41,7 @@ config {
     plugin {
         enabled             = true
         id                  = 'org.kordamp.gradle.jdeprscan'
-        implementationClass = 'org.kordamp.gradle.jdktools.JDeprScanPlugin'
+        implementationClass = 'org.kordamp.gradle.plugin.jdeprscan.JDeprscanPlugin'
     }
 
     bintray {
@@ -52,6 +52,16 @@ config {
 dependencies {
     compileOnly gradleApi()
     api "org.zeroturnaround:zt-exec:$ztexecVersion"
+}
+
+processResources {
+    filesMatching(['**/*.properties']) {
+        expand(
+            'version': project.version,
+            'id': 'jdeprscan',
+            'name': 'Jdeprscan Gradle plugin'
+        )
+    }
 }
 
 task publishRelease(dependsOn: [bintrayUpload, publishPlugins]) {}

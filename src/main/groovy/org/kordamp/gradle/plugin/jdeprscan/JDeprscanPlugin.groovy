@@ -15,35 +15,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kordamp.gradle.jdktools
+package org.kordamp.gradle.plugin.jdeprscan
 
 import groovy.transform.CompileStatic
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.plugins.BasePlugin
-import org.gradle.api.plugins.JavaBasePlugin
+import org.gradle.api.plugins.JavaPlugin
+import org.gradle.api.tasks.TaskProvider
+import org.kordamp.gradle.plugin.jdeprscan.tasks.JDeprscanReportTask
 
 /**
  * @author Andres Almiray
  */
 @CompileStatic
-class JDeprScanPlugin implements Plugin<Project> {
-    Project project
-
+class JDeprscanPlugin implements Plugin<Project> {
     void apply(Project project) {
-        this.project = project
+        Banner.display(project)
 
-        project.plugins.apply(JavaBasePlugin)
+        project.plugins.apply(JavaPlugin)
 
-        project.tasks.findByName('check').dependsOn << project.tasks.register('jdeprscanReport', JDeprScanReportTask,
-            new Action<JDeprScanReportTask>() {
+        TaskProvider<JDeprscanReportTask> report = project.tasks.register('jdeprscanReport', JDeprscanReportTask,
+            new Action<JDeprscanReportTask>() {
                 @Override
-                void execute(JDeprScanReportTask t) {
-                    t.dependsOn('classes')
+                void execute(JDeprscanReportTask t) {
+                    t.dependsOn(project.tasks.named('classes'))
                     t.group = BasePlugin.BUILD_GROUP
                     t.description = 'Generate a jdeprscan report on project classes and dependencies'
                 }
             })
+
+        project.tasks.named('check').configure(new Action<Task>() {
+            @Override
+            void execute(Task t) {
+                t.dependsOn(report)
+            }
+        })
     }
 }

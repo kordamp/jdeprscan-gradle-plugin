@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kordamp.gradle.jdktools
+package org.kordamp.gradle.plugin.jdeprscan.tasks
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
@@ -27,7 +27,7 @@ import org.zeroturnaround.exec.ProcessExecutor
 /**
  * @author Andres Almiray
  */
-class JDeprScanReportTask extends DefaultTask {
+class JDeprscanReportTask extends DefaultTask {
     @Input boolean forRemoval = false
     @Input int release = 9
     @Input boolean verbose = false
@@ -64,7 +64,7 @@ class JDeprScanReportTask extends DefaultTask {
                     return // skip
                 }
 
-                outputs << JDeprScanReportTask.runOn(baseCmd, file.absolutePath)
+                outputs << JDeprscanReportTask.runOn(baseCmd, file.absolutePath)
             }
         }
 
