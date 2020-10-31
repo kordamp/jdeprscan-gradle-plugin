@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 plugins {
     id 'java-library'
     id 'groovy'
@@ -39,10 +40,12 @@ config {
        }
     }
 
-    plugin {
-        enabled             = true
-        id                  = 'org.kordamp.gradle.jdeprscan'
-        implementationClass = 'org.kordamp.gradle.plugin.jdeprscan.JDeprscanPlugin'
+    plugins {
+        plugin {
+            name                = 'jderpscan'
+            id                  = 'org.kordamp.gradle.jdeprscan'
+            implementationClass = 'org.kordamp.gradle.plugin.jdeprscan.JDeprscanPlugin'
+        }
     }
 
     bintray {
@@ -50,9 +53,15 @@ config {
     }
 }
 
+repositories {
+    mavenLocal()
+}
+
 dependencies {
     compileOnly gradleApi()
+
     api "org.zeroturnaround:zt-exec:$ztexecVersion"
+    api "org.kordamp.gradle:base-gradle-plugin:$kordampPluginVersion"
 }
 
 processResources {

@@ -4,9 +4,8 @@
 :project-repo:    maven
 :project-name:    jdeprscan-gradle-plugin
 :project-group:   org.kordamp.gradle
-:project-version: 0.8.0
+:project-version: 0.9.0
 
-image:http://img.shields.io/travis/{project-owner}/{project-name}/master.svg["Build Status (travis)", link="https://travis-ci.org/{project-owner}/{project-name}"]
 image:https://github.com/{project-owner}/{project-name}/workflows/Build/badge.svg["Build Status", link="https://github.com/{project-owner}/{project-name}/actions"]
 image:http://img.shields.io/badge/license-ASL2-blue.svg["ASL2 Licensed", link="http://opensource.org/licenses/ASL2"]
 image:https://api.bintray.com/packages/{project-owner}/{project-repo}/{project-name}/images/download.svg[link="https://bintray.com/{project-owner}/{project-repo}/{project-name}/_latestVersion"]
@@ -51,17 +50,29 @@ as classpath.
 
 The following properties can be specified in the `jdeprscanReport` task configuration
 
+[options="header"]
 |===
-| Name           | Type         | Default Value
-| forRemoval     | boolean      | false
-| release        | int          | 9
-| verbose        | boolean      | false
-| javaHome       | String       |
-| consoleOutput  | boolean      | true
-| reportsDir     | File         | "${buildDir}/reports/jdeprscan"
-| configurations | List<String> | ['runtime']
-| sourceSets     | List<String> | ['main']
+| Name           | Option                   | Property                 | Type         | Default Value
+| forRemoval     | jdeprscan-for-removal    | jdeprscan.for.removal    | boolean      | false
+| release        | jdeprscan-release        | jdeprscan.release        | int          | 9
+| verbose        | jdeprscan-verbose        | jdeprscan.verbose        | boolean      | false
+| javaHome       | jdeprscan-java-home      | jdeprscan.java.home      | String       |
+| consoleOutput  | jdeprscan-console-output | jdeprscan.console.output | boolean      | true
+| reportsDir     |                          |                          | File         | "${buildDir}/reports/jdeprscan"
+| configurations | jdeprscan-configurations | jdeprscan.configurations | List<String> | ['runtime']
+| sourceSets     | jdeprscan-sourcesets     | jdeprscan.sourcesets     | List<String> | ['main']
 |===
+
+Task properties may be defined on the command line using their option name, or their property name, such as
+
+[source]
+----
+$ gradle jdeprscan --jdeprscan-verbose
+$ gradle jdeprscan -Pjdeprscan.verbose=true
+$ gradle jdeprscan -Djdeprscan.verbose=true
+$ set JDEPRSCAN_VERBOSE=true
+$ gradle jdeprscan
+----
 
 You may run this plugin in a build that relies Java 8 as long as you configure a valid path to a JDK9+ installation
 directory using the `javaHome` property, for example
