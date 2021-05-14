@@ -60,7 +60,7 @@ class JDeprscanReportTask extends DefaultTask {
         consoleOutput = SimpleBooleanState.of(this, 'jdeprscan.console.output', true)
         javaHome = SimpleStringState.of(this, 'jdeprscan.java.home', System.getProperty('java.home'))
 
-        configurations = SimpleListState.of(this, 'jdeprscan.configurations', ['runtime'])
+        configurations = SimpleListState.of(this, 'jdeprscan.configurations', [])
         sourceSets = SimpleListState.of(this, 'jdeprscan.sourcesets', ['main'])
 
         release = SimpleIntegerState.of(this, 'jdeprscan.release', 9)

@@ -41,8 +41,8 @@ plugins {
 }
 ----
 
-This will add a `jdeprscanReport` task to your build, which will analyze the `main` sourceSets using the `runtime` configuration
-as classpath.
+This will add a `jdeprscanReport` task to your build, which will analyze the `main` sourceSets using the `runtimeClasspath`
+configuration by default.
 
 == Configuration
 === Plugin configuration
@@ -58,7 +58,7 @@ The following properties can be specified in the `jdeprscanReport` task configur
 | javaHome       | jdeprscan-java-home      | jdeprscan.java.home      | String       |
 | consoleOutput  | jdeprscan-console-output | jdeprscan.console.output | boolean      | true
 | reportsDir     |                          |                          | File         | "${buildDir}/reports/jdeprscan"
-| configurations | jdeprscan-configurations | jdeprscan.configurations | List<String> | ['runtime']
+| configurations | jdeprscan-configurations | jdeprscan.configurations | List<String> | ['runtimeClasspath']
 | sourceSets     | jdeprscan-sourcesets     | jdeprscan.sourcesets     | List<String> | ['main']
 |===
 
@@ -90,7 +90,7 @@ shows how this plugin can be configured to run `jdeprscanReport` on production a
 ----
 jdeprscanReport {
     sourceSets = ['main', 'test']
-    configurations = ['testRuntime']
+    configurations = ['testRuntimeClasspath']
 }
 ----
 
