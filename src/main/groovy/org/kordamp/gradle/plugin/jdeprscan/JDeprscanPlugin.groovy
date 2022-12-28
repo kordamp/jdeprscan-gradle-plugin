@@ -24,6 +24,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.plugins.JavaPlugin
+import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.TaskProvider
 import org.kordamp.gradle.plugin.jdeprscan.tasks.JDeprscanReportTask
 
@@ -33,7 +34,9 @@ import org.kordamp.gradle.plugin.jdeprscan.tasks.JDeprscanReportTask
 @CompileStatic
 class JDeprscanPlugin implements Plugin<Project> {
     void apply(Project project) {
-        Banner.display(project)
+        project.gradle.sharedServices
+            .registerIfAbsent('jdeprscan-banner', Banner, { spec -> })
+            .get().display(project)
 
         project.plugins.apply(JavaPlugin)
 
@@ -44,6 +47,9 @@ class JDeprscanPlugin implements Plugin<Project> {
                     t.dependsOn(project.tasks.named('classes'))
                     t.group = BasePlugin.BUILD_GROUP
                     t.description = 'Generate a jdeprscan report on project classes and dependencies'
+                    t.javaPluginConvention.set(project.convention.getPlugin(JavaPluginConvention))
+                    t.reportDir.convention(project.layout.buildDirectory.dir('reports/jdeprscan'))
+                    t.projectConfigurations = project.configurations
                 }
             })
 

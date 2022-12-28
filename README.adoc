@@ -57,7 +57,7 @@ The following properties can be specified in the `jdeprscanReport` task configur
 | verbose        | jdeprscan-verbose        | jdeprscan.verbose        | boolean      | false
 | javaHome       | jdeprscan-java-home      | jdeprscan.java.home      | String       |
 | consoleOutput  | jdeprscan-console-output | jdeprscan.console.output | boolean      | true
-| reportsDir     |                          |                          | File         | "${buildDir}/reports/jdeprscan"
+| reportsDir     |                          |                          | Directory    | "${buildDir}/reports/jdeprscan"
 | configurations | jdeprscan-configurations | jdeprscan.configurations | List<String> | ['runtimeClasspath']
 | sourceSets     | jdeprscan-sourcesets     | jdeprscan.sourcesets     | List<String> | ['main']
 |===

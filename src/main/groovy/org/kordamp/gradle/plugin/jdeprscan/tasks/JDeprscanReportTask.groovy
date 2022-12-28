@@ -19,6 +19,9 @@ package org.kordamp.gradle.plugin.jdeprscan.tasks
 
 import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
+import org.gradle.api.artifacts.ConfigurationContainer
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -39,6 +42,8 @@ import org.kordamp.gradle.property.SimpleStringState
 import org.kordamp.gradle.property.StringState
 import org.zeroturnaround.exec.ProcessExecutor
 
+import javax.inject.Inject
+
 /**
  * @author Andres Almiray
  */
@@ -52,15 +57,26 @@ class JDeprscanReportTask extends DefaultTask {
     private final ListState configurations
     private final ListState sourceSets
 
-    private Object reportDir
+    @OutputDirectory
+    final DirectoryProperty reportDir
 
-    JDeprscanReportTask() {
+    @Internal
+    final Property<JavaPluginConvention> javaPluginConvention
+
+    @Internal
+    ConfigurationContainer projectConfigurations
+
+    @Inject
+    JDeprscanReportTask(ObjectFactory objects) {
+        reportDir = objects.directoryProperty()
+        javaPluginConvention = objects.property(JavaPluginConvention)
+
         forRemoval = SimpleBooleanState.of(this, 'jdeprscan.for.removal', false)
         verbose = SimpleBooleanState.of(this, 'jdeprscan.verbose', false)
         consoleOutput = SimpleBooleanState.of(this, 'jdeprscan.console.output', true)
         javaHome = SimpleStringState.of(this, 'jdeprscan.java.home', System.getProperty('java.home'))
 
-        configurations = SimpleListState.of(this, 'jdeprscan.configurations', [])
+        configurations = SimpleListState.of(this, 'jdeprscan.configurations', (List<String>) null)
         sourceSets = SimpleListState.of(this, 'jdeprscan.sourcesets', ['main'])
 
         release = SimpleIntegerState.of(this, 'jdeprscan.release', 9)
@@ -136,15 +152,13 @@ class JDeprscanReportTask extends DefaultTask {
         File javaHomeDir = new File(resolvedJavaHome.get())
         File javaBindDir = new File(javaHomeDir, 'bin')
 
-        JavaPluginConvention convention = project.convention.getPlugin(JavaPluginConvention)
-
         final List<String> baseCmd = [new File(javaBindDir, 'jdeprscan').absolutePath]
         baseCmd << '--class-path'
         baseCmd << resolvedConfigurations.getOrElse(['runtimeClasspath'])
-            .collect { c -> project.configurations[c].files }.flatten().unique().join(File.pathSeparator) +
+            .collect { c -> projectConfigurations[c].files }.flatten().unique().join(File.pathSeparator) +
             File.pathSeparator +
             resolvedSourceSets.getOrElse(['main'])
-                .collect { s -> convention.sourceSets.findByName(s).output.asPath }.flatten().unique().join(File.pathSeparator)
+                .collect { s -> javaPluginConvention.get().sourceSets.findByName(s).output.asPath }.flatten().unique().join(File.pathSeparator)
 
         if (resolvedForRemoval.get() && resolvedRelease.get() > 8) baseCmd << '--for-removal'
         baseCmd << '--release'
@@ -153,7 +167,7 @@ class JDeprscanReportTask extends DefaultTask {
 
         List<String> outputs = []
         resolvedSourceSets.getOrElse(['main']).each { sourceSetName ->
-            convention.sourceSets.findByName(sourceSetName).output.files.each { File file ->
+            javaPluginConvention.get().sourceSets.findByName(sourceSetName).output.files.each { File file ->
                 if (!file.exists()) {
                     return // skip
                 }
@@ -164,24 +178,11 @@ class JDeprscanReportTask extends DefaultTask {
 
         if (resolvedConsoleOutput.get()) println outputs.join('\n')
 
-        File parentFile = getReportsDir()
+        File parentFile = reportDir.get().asFile
         if (!parentFile.exists()) parentFile.mkdirs()
         File logFile = new File(parentFile, 'jdeprscan-report.txt')
 
         logFile.withPrintWriter { w -> outputs.each { f -> w.println(f) } }
-    }
-
-    @OutputDirectory
-    File getReportsDir() {
-        if (this.reportDir == null) {
-            File reportsDir = new File(project.buildDir, 'reports')
-            this.reportDir = new File(reportsDir, 'jdeprscan')
-        }
-        project.file(this.reportDir)
-    }
-
-    void setReportsDir(File f) {
-        this.reportDir = f
     }
 
     private static String runOn(List<String> baseCmd, String path) {
