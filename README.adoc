@@ -4,7 +4,7 @@
 :project-repo:    maven
 :project-name:    jdeprscan-gradle-plugin
 :project-group:   org.kordamp.gradle
-:project-version: 0.10.0
+:project-version: 0.11.0
 :plugin-id:       {project-group}.jdeprscan
 
 image:https://img.shields.io/github/actions/workflow/status/{project-owner}/{project-name}/early-access.yml?branch=master&logo=github&label=Build["Build Status", link="https://github.com/{project-owner}/{project-name}/actions"]
